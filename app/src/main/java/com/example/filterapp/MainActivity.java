@@ -25,21 +25,21 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private SurfaceHolder mSurfaceHolder;
     private ImageButton mImageButton;
     private int mCurrentCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
-    private ListView mListView;
-    private String[] mImageUrls = {
-            "https://example.com/image1.jpg",
-            "https://example.com/image2.jpg",
-            "https://example.com/image3.jpg",
-            // Agrega más URLs de imágenes aquí
-    };
+//    private ListView mListView;
+//    private String[] mImageUrls = {
+//            "https://example.com/image1.jpg",
+//            "https://example.com/image2.jpg",
+//            "https://example.com/image3.jpg",
+//            // Agrega más URLs de imágenes aquí
+//    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mListView = findViewById(R.id.list_view);
-        CustomAdapter adapter = new CustomAdapter(this, mImageUrls);
-        mListView.setAdapter(adapter);
+//        mListView = findViewById(R.id.list_view);
+//        CustomAdapter adapter = new CustomAdapter(this, mImageUrls);
+//        mListView.setAdapter(adapter);
 
         mSurfaceView = findViewById(R.id.camera_preview);
         mSurfaceHolder = mSurfaceView.getHolder();

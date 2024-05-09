@@ -38,6 +38,8 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation ("com.github.bumptech.glide:glide:4.12.0")
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
+
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
