@@ -198,6 +198,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         }
     }
 
+    // TODO: Falta la implemetacion del boton para sacar una foto y pasarla mediante onactivtyResult
+    // TODO: aplicar los filtro a las imagenes
+    // TODO: aplicar el filtro en tiempo real
+
+
+
     private void turnOffFlash() {
         if (mCamera != null) {
             Camera.Parameters params = mCamera.getParameters();
