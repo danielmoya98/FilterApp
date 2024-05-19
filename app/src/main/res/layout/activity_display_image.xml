@@ -3,13 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
-    <SurfaceView
-        android:id="@+id/camera_preview"
+    <ImageView
+        android:id="@+id/image_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        tools:ignore="ContentDescription" />
 
     <LinearLayout
         android:id="@+id/cambiar_altura"
@@ -127,14 +128,14 @@
                 tools:ignore="RtlHardcoded">
 
                 <ImageButton
-                    android:id="@+id/btn_glass"
+                    android:id="@+id/arrow_button"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginStart="25dp"
-                    android:background="@drawable/glass"
+                    android:background="@drawable/arrow"
+                    android:rotation="180"
                     android:importantForAccessibility="no"
                     tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck">
-
                 </ImageButton>
 
                 <Space
@@ -144,30 +145,22 @@
 
                 </Space>
 
-                <ImageButton
-                    android:id="@+id/gallery_button"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:background="@drawable/gallery"
-                    android:importantForAccessibility="no"
-                    tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
 
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1">
 
-                </Space>
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_capture"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="60dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="70dp"
                     android:backgroundTint="#fbff44"
+                    app:icon="@drawable/glass"
+                    app:iconSize="24dp"
                     app:cornerRadius="75dp"
+                    android:textColor="@color/black"
                     app:strokeColor="@color/white"
+                    android:text="FIltros"
+                    app:iconTint="@color/black"
                     app:strokeWidth="5dp"
                     tools:ignore="HardcodedText,SpeakableTextPresentCheck" />
 
@@ -180,12 +173,13 @@
                 </Space>
 
                 <ImageButton
-                    android:id="@+id/toggle_button"
+                    android:id="@+id/download_button"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    android:background="@drawable/toggle_button_selector"
+                    android:background="@drawable/download"
                     android:importantForAccessibility="no"
                     tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
 
                 <Space
                     android:layout_width="0dp"
@@ -195,14 +189,13 @@
                 </Space>
 
                 <ImageButton
-                    android:id="@+id/rotar_camara"
+                    android:id="@+id/share_button"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginEnd="25dp"
-                    android:background="@drawable/flip_camera_android_24dp_fill0_wght400_grad0_opsz24"
+                    android:background="@drawable/share_24dp_fill0_wght400_grad0_opsz24"
                     android:importantForAccessibility="no"
                     tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck">
-
                 </ImageButton>
 
 
@@ -211,6 +204,5 @@
         </androidx.cardview.widget.CardView>
 
     </LinearLayout>
-
 
 </RelativeLayout>

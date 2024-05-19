@@ -1,61 +1,208 @@
 package com.example.filterapp;
+
 import android.Manifest;
+import android.content.Intent;
+import com.google.android.material.button.MaterialButton;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import android.widget.ListView;
+import com.google.android.material.card.MaterialCardView;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
     private static final int CAMERA_PERMISSION_CODE = 100;
+    private static final int PICK_IMAGE_REQUEST = 101;  // Request code for gallery intent
+
     private Camera mCamera;
+    private boolean isOn = false;
     private SurfaceView mSurfaceView;
     private SurfaceHolder mSurfaceHolder;
+    private boolean isScrollViewVisible = false;
     private ImageButton mImageButton;
     private int mCurrentCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
-//    private ListView mListView;
-//    private String[] mImageUrls = {
-//            "https://example.com/image1.jpg",
-//            "https://example.com/image2.jpg",
-//            "https://example.com/image3.jpg",
-//            // Agrega más URLs de imágenes aquí
-//    };
+
+    private ScaleGestureDetector scaleGestureDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        mListView = findViewById(R.id.list_view);
-//        CustomAdapter adapter = new CustomAdapter(this, mImageUrls);
-//        mListView.setAdapter(adapter);
 
         mSurfaceView = findViewById(R.id.camera_preview);
         mSurfaceHolder = mSurfaceView.getHolder();
         mSurfaceHolder.addCallback(this);
-
-        mImageButton = findViewById(R.id.image_button);
+        MaterialButton captureButton= findViewById(R.id.btn_capture);
+        mImageButton = findViewById(R.id.toggle_button);
         mImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isOn = !isOn;
+                v.setSelected(isOn);
+
+                if (isOn) {
+                    turnOnFlash();
+                } else {
+                    turnOffFlash();
+                }
+            }
+        });
+
+        ImageButton rotateCameraButton = findViewById(R.id.rotar_camara);
+        rotateCameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 switchCamera();
             }
         });
 
-        // Solicitar permiso de cámara si no se ha otorgado
+        captureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Aquí deberías poner el código para capturar una foto y pasarla a la otra actividad
+                // Pero como este proceso es más complejo y requiere el uso de la cámara, no puedo proporcionarte el código completo aquí.
+                // En su lugar, puedo sugerirte algunos pasos generales:
+                // 1. Utiliza la API de la cámara para capturar una foto.
+                // 2. Guarda la foto en la memoria del dispositivo o en un directorio temporal.
+                // 3. Crea un Intent para pasar la URI de la foto a la otra actividad.
+                // 4. Inicia la otra actividad con ese Intent.
+            }
+        });
+
+        CardView detailedCardView = findViewById(R.id.detailed_card_view);
+
+        ImageButton btnGlass = findViewById(R.id.btn_glass);
+        HorizontalScrollView horizontalScrollView = findViewById(R.id.horizontal_scroll_view);
+        btnGlass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isScrollViewVisible = !isScrollViewVisible;
+                horizontalScrollView.setVisibility(isScrollViewVisible ? View.VISIBLE : View.GONE);
+                detailedCardView.setVisibility(isScrollViewVisible ? View.GONE : View.VISIBLE);
+            }
+        });
+
+        ImageButton galleryButton = findViewById(R.id.gallery_button);
+        galleryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openGallery();
+            }
+        });
+
+        // Handling MaterialCardView clicks
+        MaterialCardView cardView1 = findViewById(R.id.card_view_1);
+        MaterialCardView cardView2 = findViewById(R.id.card_view_2);
+        MaterialCardView cardView3 = findViewById(R.id.card_view_3);
+        MaterialCardView cardView4 = findViewById(R.id.card_view_4);
+
+        View.OnClickListener onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                horizontalScrollView.setVisibility(View.GONE);
+                detailedCardView.setVisibility(View.VISIBLE);
+            }
+        };
+
+        cardView1.setOnClickListener(onClickListener);
+        cardView2.setOnClickListener(onClickListener);
+        cardView3.setOnClickListener(onClickListener);
+        cardView4.setOnClickListener(onClickListener);
+
+        // Request Camera Permissions
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
+        }
+
+        // Initialize the ScaleGestureDetector
+        scaleGestureDetector = new ScaleGestureDetector(this, new ScaleGestureDetector.OnScaleGestureListener() {
+            private float currentZoom = 0;
+
+            @Override
+            public boolean onScale(ScaleGestureDetector detector) {
+                if (mCamera != null) {
+                    Camera.Parameters params = mCamera.getParameters();
+                    if (params.isZoomSupported()) {
+                        currentZoom += (detector.getScaleFactor() - 1) * 50;
+                        int maxZoom = params.getMaxZoom();
+                        currentZoom = Math.max(0, Math.min(currentZoom, maxZoom));
+                        params.setZoom((int) currentZoom);
+                        mCamera.setParameters(params);
+                    }
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onScaleBegin(ScaleGestureDetector detector) {
+                return true;
+            }
+
+            @Override
+            public void onScaleEnd(ScaleGestureDetector detector) {
+            }
+        });
+
+        // Set touch listener to the SurfaceView to detect pinch zoom gestures
+        mSurfaceView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                scaleGestureDetector.onTouchEvent(event);
+                return true;
+            }
+        });
+    }
+
+    private void openGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null) {
+            Uri selectedImage = data.getData();
+            // Pass the selected image URI to DisplayImageActivity
+            Intent intent = new Intent(MainActivity.this, DisplayImageActivity.class);
+            intent.putExtra("imageUri", selectedImage);
+            startActivity(intent);
+        }
+    }
+
+    private void turnOnFlash() {
+        if (getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+            if (mCamera != null) {
+                Camera.Parameters params = mCamera.getParameters();
+                params.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                mCamera.setParameters(params);
+            }
+        }
+    }
+
+    private void turnOffFlash() {
+        if (mCamera != null) {
+            Camera.Parameters params = mCamera.getParameters();
+            params.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+            mCamera.setParameters(params);
         }
     }
 
