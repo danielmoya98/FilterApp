@@ -1,22 +1,27 @@
 package com.example.filterapp;
 
 import com.example.filterapp.ImageUtils;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.card.MaterialCardView;
+
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.os.Environment;
 import android.content.Intent;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 public class DisplayImageActivity extends AppCompatActivity {
 
     private ImageView imageView;
-
+    private boolean isScrollViewVisible = false;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +40,39 @@ public class DisplayImageActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        CardView detailedCardView = findViewById(R.id.detailed_card_view);
+
+        MaterialButton btnGlass = findViewById(R.id.btn_glass);
+        HorizontalScrollView horizontalScrollView = findViewById(R.id.horizontal_scroll_view);
+        btnGlass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isScrollViewVisible = !isScrollViewVisible;
+                horizontalScrollView.setVisibility(isScrollViewVisible ? View.VISIBLE : View.GONE);
+                detailedCardView.setVisibility(isScrollViewVisible ? View.GONE : View.VISIBLE);
+            }
+        });
+
+
+        // Handling MaterialCardView clicks
+        MaterialCardView cardView1 = findViewById(R.id.card_view_1);
+        MaterialCardView cardView2 = findViewById(R.id.card_view_2);
+        MaterialCardView cardView3 = findViewById(R.id.card_view_3);
+        MaterialCardView cardView4 = findViewById(R.id.card_view_4);
+
+        View.OnClickListener onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                horizontalScrollView.setVisibility(View.GONE);
+                detailedCardView.setVisibility(View.VISIBLE);
+            }
+        };
+
+        cardView1.setOnClickListener(onClickListener);
+        cardView2.setOnClickListener(onClickListener);
+        cardView3.setOnClickListener(onClickListener);
+        cardView4.setOnClickListener(onClickListener);
 
 
         // Obtener la URI de la imagen desde el Intent

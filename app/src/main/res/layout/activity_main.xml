@@ -4,12 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:padding="0dp">
 
     <SurfaceView
         android:id="@+id/camera_preview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:scaleY="1"
+        android:scaleX="1"
+        />
 
     <LinearLayout
         android:id="@+id/cambiar_altura"
@@ -24,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbars="none"
-            android:visibility="gone"
+            android:visibility="visible"
             tools:ignore="SpeakableTextPresentCheck">
 
             <LinearLayout
@@ -114,7 +118,7 @@
             android:layout_width="350dp"
             android:layout_height="100dp"
             android:backgroundTint="#0e242f"
-            android:visibility="visible"
+            android:visibility="gone"
             app:cardCornerRadius="20dp"
             app:cardElevation="4dp">
 
